@@ -3,11 +3,12 @@ import SiteHeader from '@/components/SiteHeader';
 import LetterPaper from '@/components/paper/LetterPaper';
 import { papers } from '@/components/paper/papers';
 import { SAMPLE_LETTER } from '@/components/paper/sample';
+import HandwritingRobot from '@/components/landing/HandwritingRobot';
 
 const STEPS = [
-  { title: '편지지를 고르고', desc: '여덟 가지 편지지 중 마음에 드는 것을 고릅니다.' },
+  { title: '편지지를 고르고', desc: '스무 가지 편지지와 열 가지 글씨체 중 마음에 드는 것을 고릅니다.' },
   { title: '편지를 쓰고', desc: '편지지 위에 바로 씁니다. 막히면 AI가 초안을 잡아드려요.' },
-  { title: '주소를 적으면 끝', desc: '받는 분과 보내는 분 주소만 적으면, 저희가 손으로 옮겨 써서 우체국으로 갑니다.' },
+  { title: '주소를 적으면 끝', desc: '받는 분과 보내는 분 주소만 적으면, 손글씨 기계가 옮겨 써서 우체국으로 갑니다.' },
 ];
 
 export default function LandingPage() {
@@ -25,7 +26,7 @@ export default function LandingPage() {
               우편으로 보내드려요.
             </h1>
             <p className="mt-6 max-w-md text-[17px] leading-relaxed text-ink-soft">
-              타이핑한 편지를 사람이 종이에 손으로 다시 씁니다. 받는 분은 화면이 아니라 우편함에서 편지를 만나요.
+              타이핑한 편지를 손글씨 기계가 진짜 펜으로 종이에 옮겨 씁니다. 받는 분은 화면이 아니라 우편함에서 편지를 만나요.
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-3">
               <Link href="/papers" className="btn-primary">
@@ -40,6 +41,32 @@ export default function LandingPage() {
               <LetterPaper paperId="floral" font="nanum-pen" mode="read" {...SAMPLE_LETTER} />
             </div>
           </div>
+        </section>
+
+        <section className="grid items-center gap-10 border-t border-line py-12 sm:py-16 lg:grid-cols-[1fr_1.1fr] lg:gap-16">
+          <div>
+            <h2 className="text-3xl leading-tight sm:text-4xl" style={{ fontFamily: 'var(--font-hand)' }}>
+              다 쓰면, 기계가 펜을 잡습니다.
+            </h2>
+            <p className="mt-5 max-w-md text-[17px] leading-relaxed text-ink-soft">
+              완성한 편지는 손글씨 기계가 진짜 펜으로 편지지에 한 획씩 옮겨 씁니다. 잉크가 종이에 스며드는, 인쇄와는 다른 글씨예요.
+            </p>
+            <ul className="mt-6 space-y-3 text-[15px]">
+              <li className="flex gap-3">
+                <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-stamp" aria-hidden />
+                <span>고른 편지지와 글씨체 그대로, 한 장씩 씁니다.</span>
+              </li>
+              <li className="flex gap-3">
+                <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-stamp" aria-hidden />
+                <span>다 쓴 편지는 봉투에 넣어 우체국으로 보냅니다.</span>
+              </li>
+              <li className="flex gap-3">
+                <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-stamp" aria-hidden />
+                <span>받는 분은 화면이 아니라 우편함에서 편지를 만납니다.</span>
+              </li>
+            </ul>
+          </div>
+          <HandwritingRobot />
         </section>
 
         <section className="py-12 sm:py-16">
@@ -59,7 +86,7 @@ export default function LandingPage() {
           <div className="flex items-end justify-between gap-4">
             <h2 className="text-2xl font-semibold">편지지 미리보기</h2>
             <Link href="/papers" className="text-sm font-medium text-postal hover:underline">
-              여덟 가지 모두 보기
+              스무 가지 모두 보기
             </Link>
           </div>
           <ul className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-4 sm:gap-6">
