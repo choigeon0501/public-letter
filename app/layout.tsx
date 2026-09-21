@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { fontVariableClass } from '@/lib/fonts';
+import { fontVariableClass } from './fonts';
 import './globals.css';
 
 export const metadata: Metadata = {
