@@ -104,7 +104,7 @@ type LetterPaper = {
 
 ## 7. 주소 입력
 
-- `react-daum-postcode`의 `DaumPostcodeEmbed`를 `next/dynamic({ ssr: false })`로 로드. "우편번호 찾기" 버튼 → 폼 아래 임베드 영역 펼침 → 선택 시 `zonecode`·`address` 채우고 접힘, 포커스는 상세 주소로.
+- `react-daum-postcode`의 `useKakaoPostcodePopup`으로 "우편번호 찾기" 버튼 → **별도 팝업 창** → 선택 시 `zonecode`·`address` 채우고 창 닫힘, 포커스는 상세 주소로. (임베드 방식은 사용자 요청으로 팝업으로 변경)
 - 기본 주소 입력은 `readOnly`.
 - 검증(zod, `lib/validation.ts`): name 1~20자, zonecode 5자리 숫자, address 필수, detail 1~100자, phone 선택(입력 시 `01[0-9]-?\d{3,4}-?\d{4}`).
 - 제출 시 전체 검증 → 실패 필드 아래 에러 메시지, 첫 에러 필드로 스크롤.

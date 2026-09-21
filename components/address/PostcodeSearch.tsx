@@ -1,12 +1,6 @@
 'use client';
 
-import dynamic from 'next/dynamic';
-import type { Address as KakaoAddress } from 'react-daum-postcode';
-
-const KakaoPostcodeEmbed = dynamic(() => import('react-daum-postcode').then((m) => m.KakaoPostcodeEmbed), {
-  ssr: false,
-  loading: () => <div className="h-[400px] animate-pulse rounded-lg bg-paper-deep" />,
-});
+import { useKakaoPostcodePopup, type Address as KakaoAddress } from 'react-daum-postcode';
 
 export type PostcodeResult = { zonecode: string; address: string };
 
@@ -17,10 +11,13 @@ export function formatKakaoAddress(data: KakaoAddress): PostcodeResult {
   return { zonecode: data.zonecode, address: `${base}${building}` };
 }
 
-export default function PostcodeSearch({ onComplete }: { onComplete: (r: PostcodeResult) => void }) {
-  return (
-    <div className="overflow-hidden rounded-lg border border-line bg-white">
-      <KakaoPostcodeEmbed onComplete={(data) => onComplete(formatKakaoAddress(data))} autoClose={false} style={{ width: '100%', height: 400 }} />
-    </div>
-  );
+/** 우편번호 검색을 별도 팝업 창으로 연다. 같은 popupKey를 써서 창이 여러 개 뜨지 않게 한다 */
+export function usePostcodePopup(onComplete: (r: PostcodeResult) => void) {
+  const open = useKakaoPostcodePopup();
+  return () =>
+    open({
+      popupKey: 'handletter-postcode',
+      popupTitle: '우편번호 찾기',
+      onComplete: (data) => onComplete(formatKakaoAddress(data)),
+    });
 }

@@ -1,9 +1,9 @@
 'use client';
 
-import { useId, useState } from 'react';
+import { useId } from 'react';
 import type { Address } from '@/lib/store';
 import type { FieldErrors } from '@/lib/validation';
-import PostcodeSearch from './PostcodeSearch';
+import { usePostcodePopup } from './PostcodeSearch';
 
 type Props = {
   title: string;
@@ -15,8 +15,11 @@ type Props = {
 
 export default function AddressFields({ title, hint, value, errors, onChange }: Props) {
   const id = useId();
-  const [searching, setSearching] = useState(false);
   const set = (patch: Partial<Address>) => onChange({ ...value, ...patch });
+  const openPostcode = usePostcodePopup((r) => {
+    set(r);
+    document.getElementById(`${id}-detail`)?.focus();
+  });
   const fieldClass = (key: keyof Address) => `field ${errors[key] ? 'field-error' : ''}`;
   const errorText = (key: keyof Address) =>
     errors[key] ? (
@@ -60,21 +63,10 @@ export default function AddressFields({ title, hint, value, errors, onChange }: 
               aria-invalid={!!errors.zonecode}
               aria-describedby={errors.zonecode ? `${id}-zonecode-error` : undefined}
             />
-            <button type="button" onClick={() => setSearching((v) => !v)} className="btn-secondary px-4 py-2 text-sm" aria-expanded={searching}>
-              {searching ? '검색 닫기' : '우편번호 찾기'}
+            <button type="button" onClick={() => openPostcode()} className="btn-secondary px-4 py-2 text-sm">
+              우편번호 찾기
             </button>
           </div>
-          {searching && (
-            <div className="mt-2">
-              <PostcodeSearch
-                onComplete={(r) => {
-                  set(r);
-                  setSearching(false);
-                  document.getElementById(`${id}-detail`)?.focus();
-                }}
-              />
-            </div>
-          )}
           <input
             className={`${fieldClass('address')} mt-2`}
             value={value.address}
