@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "deny": [
+      "Bash(*15432*)",
+      "Bash(rm -rf *)",
+      "Bash(*rm -rf *)",
+      "Bash(git push --force*)",
+      "Bash(*git push --force*)",
+      "Bash(*git push -f *)",
+      "Read(./.env)",
+      "Read(./.env.*)"
+    ]
+  },
+  "enabledMcpjsonServers": ["postgres-dev", "postgres-prd"],
+  "statusLine": {
+    "type": "command",
+    "command": "node .claude/statusline.js"
+  }
+}
