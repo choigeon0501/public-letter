@@ -38,9 +38,12 @@ export default function LetterPaper({ paperId, font, to, body, from, mode, onCha
   const bodyStyle: CSSProperties = {
     fontSize: '3.9cqw',
     lineHeight: lh,
-    backgroundImage: paper.lined
-      ? `repeating-linear-gradient(to bottom, transparent 0, transparent calc(${lh} - 1px), var(--color-paper-line) calc(${lh} - 1px), var(--color-paper-line) ${lh})`
-      : undefined,
+    ...(paper.lined
+      ? {
+          backgroundImage: 'linear-gradient(to bottom, transparent calc(100% - 1.5px), var(--color-paper-line) calc(100% - 1.5px))',
+          backgroundSize: `100% ${lh}`,
+        }
+      : {}),
   };
   const toStyle: CSSProperties = { fontSize: '4.6cqw', lineHeight: lh };
   const fromStyle: CSSProperties = { fontSize: '3.9cqw', lineHeight: lh };
