@@ -74,7 +74,7 @@ export default function LandingPage() {
           <h2 className="text-2xl font-semibold">기계가 쓰는 모습 보기</h2>
           <p className="mt-2 text-ink-soft">저희가 쓰는 것과 같은 종류의 손글씨 기계가 실제로 글씨를 쓰는 영상이에요.</p>
           <div className="mt-6">
-            <YouTubeEmbed videoId="5t-cp-SRCxM" title="손글씨 기계 작동 영상" />
+            <YouTubeEmbed videoId="Zw9pBElDnMY" title="손글씨 기계 작동 영상" />
           </div>
           <p className="mt-3 text-right text-xs text-ink-soft">영상 출처: PaxieBot 유튜브 채널</p>
         </section>
