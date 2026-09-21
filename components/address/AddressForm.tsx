@@ -7,28 +7,14 @@ import { useLetterStore, type Address } from '@/lib/store';
 import { validateAddress, type FieldErrors } from '@/lib/validation';
 import AddressFields from './AddressFields';
 
-export default function AddressForm() {
+/** 스토어 복원이 끝난 뒤에만 마운트되어 초기값을 한 번에 잡는다 */
+function AddressFormInner() {
   const router = useRouter();
-  const { hydrated, to, body, from, recipient, sender, setRecipient, setSender } = useLetterStore();
-  const [rec, setRec] = useState<Address | null>(null);
-  const [snd, setSnd] = useState<Address | null>(null);
+  const { from, recipient, sender, setRecipient, setSender } = useLetterStore();
+  const [rec, setRec] = useState<Address>(recipient);
+  const [snd, setSnd] = useState<Address>(() => ({ ...sender, name: sender.name || from }));
   const [recErrors, setRecErrors] = useState<FieldErrors>({});
   const [sndErrors, setSndErrors] = useState<FieldErrors>({});
-
-  /** 스토어 복원 후 한 번만 폼 초기값을 잡는다. 보내는 사람 이름은 편지의 From을 기본값으로 */
-  useEffect(() => {
-    if (!hydrated) return;
-    if (!to.trim() || !body.trim()) {
-      router.replace('/write');
-      return;
-    }
-    setRec((v) => v ?? recipient);
-    setSnd((v) => v ?? { ...sender, name: sender.name || from });
-  }, [hydrated, to, body, from, recipient, sender, router]);
-
-  if (!hydrated || !rec || !snd) {
-    return <div className="mx-auto h-96 w-full max-w-2xl animate-pulse rounded-2xl bg-paper-deep" />;
-  }
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -77,4 +63,19 @@ export default function AddressForm() {
       </div>
     </form>
   );
+}
+
+export default function AddressForm() {
+  const router = useRouter();
+  const { hydrated, to, body } = useLetterStore();
+  const ready = hydrated && to.trim().length > 0 && body.trim().length > 0;
+
+  useEffect(() => {
+    if (hydrated && !ready) router.replace('/write');
+  }, [hydrated, ready, router]);
+
+  if (!ready) {
+    return <div className="mx-auto h-96 w-full max-w-2xl animate-pulse rounded-2xl bg-paper-deep" />;
+  }
+  return <AddressFormInner />;
 }
