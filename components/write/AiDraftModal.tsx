@@ -9,14 +9,16 @@ type Props = {
   maxChars: number;
   hasBody: boolean;
   onInsert: (text: string) => void;
+  /** false면 질문 UI까지만 보여주고 생성 대신 준비 중 안내 */
+  enabled: boolean;
 };
 
 const RELATIONS = ['친구', '연인', '가족', '손주·자녀', '부모', '동료', '기타'] as const;
 const CASUAL_RELATIONS: string[] = ['친구', '연인'];
 
-type Phase = 'form' | 'streaming' | 'done' | 'error';
+type Phase = 'form' | 'streaming' | 'done' | 'error' | 'unavailable';
 
-export default function AiDraftModal({ open, onClose, maxChars, hasBody, onInsert }: Props) {
+export default function AiDraftModal({ open, onClose, maxChars, hasBody, onInsert, enabled }: Props) {
   const [recipient, setRecipient] = useState('');
   const [relationChip, setRelationChip] = useState<string>('');
   const [relationCustom, setRelationCustom] = useState('');
@@ -48,6 +50,10 @@ export default function AiDraftModal({ open, onClose, maxChars, hasBody, onInser
   };
 
   const generate = async () => {
+    if (!enabled) {
+      setPhase('unavailable');
+      return;
+    }
     abortRef.current?.abort();
     const controller = new AbortController();
     abortRef.current = controller;
@@ -215,6 +221,21 @@ export default function AiDraftModal({ open, onClose, maxChars, hasBody, onInser
                 취소
               </button>
             )}
+          </div>
+        )}
+
+        {phase === 'unavailable' && (
+          <div className="mt-5 text-center">
+            <p className="text-lg font-semibold">AI 초안 기능은 아직 준비 중입니다.</p>
+            <p className="mt-2 text-sm text-ink-soft">지금은 편지지에 직접 써주세요. 입력하신 내용은 남아 있어요.</p>
+            <div className="mt-5 flex gap-2">
+              <button type="button" onClick={backToForm} className="btn-secondary flex-1">
+                내용 고치기
+              </button>
+              <button type="button" onClick={onClose} className="btn-primary flex-1">
+                확인
+              </button>
+            </div>
           </div>
         )}
 
