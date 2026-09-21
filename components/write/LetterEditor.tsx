@@ -17,9 +17,11 @@ export default function LetterEditor() {
   const { hydrated, paperId, font, to, body, from, setPaper, setFont, setText } = useLetterStore();
   const [aiOpen, setAiOpen] = useState(false);
 
-  /** 쿼리의 편지지가 스토어와 다르면 쿼리를 우선한다(카탈로그에서 새로 고른 경우) */
+  /** 쿼리의 편지지가 스토어와 다르면 쿼리를 우선한다(카탈로그에서 새로 고른 경우). 모르는 id는 기본 편지지로 */
   useEffect(() => {
-    if (hydrated && paperParam && paperParam !== paperId) setPaper(paperParam);
+    if (!hydrated || !paperParam) return;
+    const resolved = getPaper(paperParam).id;
+    if (resolved !== paperId) setPaper(resolved);
   }, [hydrated, paperParam, paperId, setPaper]);
 
   if (!hydrated) {

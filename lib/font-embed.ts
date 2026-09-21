@@ -25,6 +25,14 @@ export function rangeCoversText(ranges: CodeRange[], text: string): boolean {
   return false;
 }
 
+/** "400", "700", "100 900" 같은 font-weight 선언이 주어진 굵기를 포함하는지. 미지정이면 true */
+export function weightMatches(declared: string, weight: number): boolean {
+  const nums = declared.trim().split(/\s+/).filter(Boolean).map(Number).filter((n) => !Number.isNaN(n));
+  if (nums.length === 0) return true;
+  if (nums.length === 1) return nums[0] === weight;
+  return weight >= nums[0] && weight <= nums[1];
+}
+
 function familyOf(rule: CSSFontFaceRule): string {
   return rule.style.getPropertyValue('font-family').replace(/["']/g, '').trim();
 }
@@ -58,13 +66,20 @@ export async function buildFontEmbedCss(element: HTMLElement, text: string): Pro
     }
   }
 
-  const needed = rules.filter((rule) => rangeCoversText(parseUnicodeRange(rule.style.getPropertyValue('unicode-range')), text));
+  const weight = parseInt(getComputedStyle(element).fontWeight, 10) || 400;
+  const needed = rules.filter(
+    (rule) =>
+      weightMatches(rule.style.getPropertyValue('font-weight'), weight) &&
+      rangeCoversText(parseUnicodeRange(rule.style.getPropertyValue('unicode-range')), text),
+  );
   const embedded = await Promise.all(
     needed.map(async (rule) => {
       const src = rule.style.getPropertyValue('src');
       const match = src.match(/url\((['"]?)([^'")]+)\1\)/);
       if (!match) return rule.cssText;
-      const dataUrl = await toDataUrl(match[2]);
+      /** src는 스타일시트 기준 상대 경로("../media/x.woff2")일 수 있다 */
+      const absolute = new URL(match[2], rule.parentStyleSheet?.href ?? location.href).href;
+      const dataUrl = await toDataUrl(absolute);
       return rule.cssText.replace(match[2], dataUrl);
     }),
   );

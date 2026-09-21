@@ -93,6 +93,7 @@ export default function AiDraftModal({ open, onClose, maxChars, hasBody, onInser
     }
     onInsert(draft);
     onClose();
+    setPhase('form');
   };
 
   const backToForm = () => {

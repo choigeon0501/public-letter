@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { parseUnicodeRange, rangeCoversText } from './font-embed';
+import { parseUnicodeRange, rangeCoversText, weightMatches } from './font-embed';
 
 describe('parseUnicodeRange', () => {
   it('단일·구간·와일드카드를 파싱한다', () => {
@@ -17,5 +17,14 @@ describe('rangeCoversText', () => {
     expect(rangeCoversText(hangul, '안녕 abc')).toBe(true);
     expect(rangeCoversText(hangul, 'abc 123')).toBe(false);
     expect(rangeCoversText([], '안녕')).toBe(true);
+  });
+});
+
+describe('weightMatches', () => {
+  it('단일 값·범위·미지정을 처리한다', () => {
+    expect(weightMatches('400', 400)).toBe(true);
+    expect(weightMatches('700', 400)).toBe(false);
+    expect(weightMatches('100 900', 400)).toBe(true);
+    expect(weightMatches('', 400)).toBe(true);
   });
 });

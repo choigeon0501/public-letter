@@ -44,7 +44,10 @@ export default function CompleteView() {
     setSaveError('');
     try {
       const { toPng } = await import('html-to-image');
-      const fontEmbedCSS = await buildFontEmbedCss(letterRef.current, `${to}${body}${from}`).catch(() => undefined);
+      const fontEmbedCSS = await buildFontEmbedCss(letterRef.current, `${to}${body}${from}`).catch((e) => {
+        console.error('font-embed 실패, html-to-image 기본 임베드로 진행', e);
+        return undefined;
+      });
       const dataUrl = await toPng(letterRef.current, { pixelRatio: 2, fontEmbedCSS });
       const a = document.createElement('a');
       a.href = dataUrl;

@@ -36,7 +36,7 @@
 | `/complete` | 클라이언트 | 완료 메시지, 봉투 → 편지 열림, 읽기 전용 편지지, 발송 정보 요약, "이미지로 저장", "새 편지 쓰기"(스토어 초기화 → `/papers`) |
 
 - 스텝 인디케이터는 `/papers`~`/complete`에만 노출. 랜딩에는 없음.
-- 가드: `/write`는 `paper` 쿼리 또는 스토어 `paperId`가 없으면 `/papers`로. `/address`는 `to`/`body`가 없으면 `/write`로. `/complete`는 `recipient.name`이 없으면 `/papers`로. 가드는 스토어 hydration 완료 후에만 판단한다.
+- 가드: `/write`는 항상 열린다(`paper` 쿼리가 없으면 스토어의 편지지, 모르는 id면 기본 편지지). `/address`는 `to`/`body`가 없으면 `/write`로. `/complete`는 `recipient.name`이 없으면 `/papers`로. 가드는 스토어 hydration 완료 후에만 판단한다.
 - `/write?paper=id` 진입 시 스토어의 `paperId`를 갱신한다. 본문은 유지한다(편지지 바꿔도 글은 남는다).
 
 ## 4. 상태 모델
@@ -69,7 +69,9 @@ type LetterPaper = {
   description: string;
   tags: string[];            // 카탈로그 카드 태그 (기본 / 가족·감사 / 연인 등)
   maxChars: number;
-  lineHeight: number;        // 줄 간격(px). 줄노트는 배경 줄과 일치
+  lineHeight: number;        // 줄 간격. 편지지 폭 기준 cqw 단위(크기가 바뀌어도 글과 줄이 같은 비율)
+  lined?: boolean;           // 본문 뒤에 가로줄을 그릴지(줄노트)
+  inkColor?: string;         // 어두운 편지지용 글자 색
   textArea: { top: number; left: number; width: number; height: number }; // %
   Background: React.ComponentType; // 인라인 SVG/CSS 배경
 };
@@ -77,7 +79,7 @@ type LetterPaper = {
 
 8종: `plain-cream`(700) · `lined-white`(700) · `kraft`(650) · `floral`(550) · `night-sky`(550) · `seaside`(600) · `season-autumn`(550) · `celebration`(500).
 
-- 편지지 비율은 A5 세로(148:210) 고정. `LetterPaper` 컴포넌트는 `aspect-[148/210]` 컨테이너 안에 배경 레이어(absolute, z-0)와 텍스트 레이어(absolute, textArea 좌표, z-10)를 겹친다.
+- 편지지 비율은 A5 세로(148:210) 고정. 글자 크기·줄 간격은 `cqw`(컨테이너 폭 기준) 단위라 썸네일·작성·완료 어디서든 같은 비율로 보인다. `LetterPaper` 컴포넌트는 `aspect-[148/210]` 컨테이너 안에 배경 레이어(absolute, z-0)와 텍스트 레이어(absolute, textArea 좌표, z-10)를 겹친다.
 - 배경은 `html-to-image` 캡처를 위해 외부 이미지 파일 없이 인라인 SVG + CSS 그라데이션으로만 만든다.
 - 텍스트 레이어는 To(1줄) / 본문(가변, `line-height: lineHeight`) / From(1줄, 우측 정렬)로 구성. 편집 모드에선 `<input>`·`<textarea>`(배경 투명, 테두리 없음), 읽기 모드에선 `<p>`/`<div>`로 같은 스타일을 쓴다.
 - 글꼴은 `next/font/google` 3종(Nanum Pen Script, Gaegu, Hi Melody)을 CSS 변수로 로드하고, `LetterPaper` 루트에 `style={{ fontFamily: var(--font-...) }}`로 적용해 편집/읽기 모드가 동일하게 보이도록 한다.
@@ -112,7 +114,7 @@ type LetterPaper = {
 - 상단: "편지가 접수되었어요. 정성껏 손으로 써서 보내드릴게요." + "영업일 기준 2~3일 내 발송".
 - `EnvelopeReveal`: 봉투(수신자 이름·주소 요약 표시) → 클릭 시 CSS 트랜지션으로 편지지가 위로 펼쳐짐. 자동 재생 없음, 클릭 1회.
 - 편지: `LetterPaper` 읽기 모드. 발송 정보 요약 카드 2개(받는 사람 / 보내는 사람).
-- "이미지로 저장": `toPng(letterRef.current, { pixelRatio: 2 })` → `<a download="letter.png">`. 실패 시 토스트 문구.
+- "이미지로 저장": `toPng(letterRef.current, { pixelRatio: 2, fontEmbedCSS })`. `fontEmbedCSS`는 `lib/font-embed.ts`가 편지에 쓰인 글꼴·글자에 해당하는 `@font-face` 조각만 base64로 인라인한 것(한글 웹폰트 조각 수백 개를 전부 받으면 15초 걸림). 실패 시 인라인 안내 문구.
 - "새 편지 쓰기": `reset()` 후 `/papers`.
 
 ## 9. 컴포넌트/파일 구조
