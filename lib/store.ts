@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
-import type { FontId } from './fonts';
+import { DEFAULT_FONT_ID, type FontId } from './fonts';
 import { DEFAULT_PAPER_ID } from '@/components/paper/papers';
 
 export type Address = {
@@ -39,7 +39,7 @@ export const emptyAddress: Address = { name: '', zonecode: '', address: '', deta
 
 const initialState: LetterState = {
   paperId: DEFAULT_PAPER_ID,
-  font: 'nanum-pen',
+  font: DEFAULT_FONT_ID,
   to: '',
   body: '',
   from: '',

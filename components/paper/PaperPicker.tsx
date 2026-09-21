@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useLetterStore } from '@/lib/store';
 import LetterPaper from './LetterPaper';
 import PaperCard from './PaperCard';
-import { getPaper, papers } from './papers';
+import { getPaper, papers, PAPER_CATEGORIES, type PaperCategory } from './papers';
 import { SAMPLE_LETTER } from './sample';
 
 export default function PaperPicker() {
@@ -14,6 +14,8 @@ export default function PaperPicker() {
   const setPaper = useLetterStore((s) => s.setPaper);
   const [selected, setSelected] = useState<string | null>(null);
   const [sheetOpen, setSheetOpen] = useState(false);
+  const [category, setCategory] = useState<PaperCategory | '전체'>('전체');
+  const visible = category === '전체' ? papers : papers.filter((p) => p.category === category);
   const current = getPaper(selected ?? storedPaperId);
 
   const start = () => {
@@ -26,10 +28,30 @@ export default function PaperPicker() {
       <div className="py-4">
         <h1 className="text-2xl font-semibold">어떤 편지지에 쓸까요?</h1>
         <p className="mt-1 text-ink-soft">편지지를 누르면 글이 올라간 모습을 미리 볼 수 있어요.</p>
+        <div role="tablist" aria-label="편지지 종류" className="-mx-4 mt-4 flex gap-1.5 overflow-x-auto px-4 [scrollbar-width:none] sm:mx-0 sm:px-0">
+          {(['전체', ...PAPER_CATEGORIES] as const).map((c) => {
+            const active = c === category;
+            const count = c === '전체' ? papers.length : papers.filter((p) => p.category === c).length;
+            return (
+              <button
+                key={c}
+                type="button"
+                role="tab"
+                aria-selected={active}
+                onClick={() => setCategory(c)}
+                className={`shrink-0 rounded-full border px-3.5 py-1.5 text-sm transition-colors ${
+                  active ? 'border-ink bg-ink text-paper' : 'border-line bg-white/60 text-ink hover:bg-white'
+                }`}
+              >
+                {c} <span className={active ? 'text-paper/70' : 'text-ink-soft'}>{count}</span>
+              </button>
+            );
+          })}
+        </div>
       </div>
       <div className="lg:grid lg:grid-cols-[1fr_360px] lg:gap-10">
         <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4">
-          {papers.map((p) => (
+          {visible.map((p) => (
             <li key={p.id}>
               <PaperCard paper={p} selected={p.id === current.id} onSelect={setSelected} />
             </li>
