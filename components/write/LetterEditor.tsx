@@ -10,12 +10,13 @@ import { useLetterStore } from '@/lib/store';
 import AiDraftModal from './AiDraftModal';
 import FontPicker from './FontPicker';
 
-export default function LetterEditor() {
+export default function LetterEditor({ aiEnabled }: { aiEnabled: boolean }) {
   const router = useRouter();
   const params = useSearchParams();
   const paperParam = params.get('paper');
   const { hydrated, paperId, font, to, body, from, setPaper, setFont, setText } = useLetterStore();
   const [aiOpen, setAiOpen] = useState(false);
+  const [noticeOpen, setNoticeOpen] = useState(false);
 
   /** 쿼리의 편지지가 스토어와 다르면 쿼리를 우선한다(카탈로그에서 새로 고른 경우). 모르는 id는 기본 편지지로 */
   useEffect(() => {
@@ -41,7 +42,7 @@ export default function LetterEditor() {
             <FontPicker value={font} onChange={setFont} />
             <button
               type="button"
-              onClick={() => setAiOpen(true)}
+              onClick={() => (aiEnabled ? setAiOpen(true) : setNoticeOpen(true))}
               className={`${body.trim() ? 'btn-secondary' : 'btn-primary'} px-4 py-2 text-sm`}
             >
               ✨ AI에게 초안 부탁하기
@@ -75,6 +76,26 @@ export default function LetterEditor() {
           </div>
         </aside>
       </div>
+
+      {noticeOpen && (
+        <div className="fixed inset-0 z-40 flex items-center justify-center bg-ink/40 px-4" onClick={() => setNoticeOpen(false)}>
+          <div
+            role="alertdialog"
+            aria-modal="true"
+            aria-labelledby="ai-notice-title"
+            className="w-full max-w-sm rounded-2xl bg-paper p-6 text-center"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <p id="ai-notice-title" className="text-lg font-semibold">
+              AI 초안 기능은 아직 준비 중입니다.
+            </p>
+            <p className="mt-2 text-sm text-ink-soft">지금은 편지지에 직접 써주세요.</p>
+            <button type="button" onClick={() => setNoticeOpen(false)} className="btn-primary mt-5 w-full" autoFocus>
+              확인
+            </button>
+          </div>
+        </div>
+      )}
 
       <AiDraftModal
         open={aiOpen}
