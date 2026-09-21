@@ -1,12 +1,13 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import LetterPaper from '@/components/paper/LetterPaper';
 import { getPaper } from '@/components/paper/papers';
 import { countChars } from '@/lib/text';
 import { useLetterStore } from '@/lib/store';
+import AiDraftModal from './AiDraftModal';
 import FontPicker from './FontPicker';
 
 export default function LetterEditor() {
@@ -14,6 +15,7 @@ export default function LetterEditor() {
   const params = useSearchParams();
   const paperParam = params.get('paper');
   const { hydrated, paperId, font, to, body, from, setPaper, setFont, setText } = useLetterStore();
+  const [aiOpen, setAiOpen] = useState(false);
 
   /** 쿼리의 편지지가 스토어와 다르면 쿼리를 우선한다(카탈로그에서 새로 고른 경우) */
   useEffect(() => {
@@ -35,11 +37,18 @@ export default function LetterEditor() {
         <div className="mx-auto w-full max-w-[520px]">
           <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
             <FontPicker value={font} onChange={setFont} />
-            <span className={`text-sm tabular-nums ${over ? 'font-semibold text-stamp' : 'text-ink-soft'}`} aria-live="polite">
-              {count} / {paper.maxChars}자
-            </span>
+            <button
+              type="button"
+              onClick={() => setAiOpen(true)}
+              className={`${body.trim() ? 'btn-secondary' : 'btn-primary'} px-4 py-2 text-sm`}
+            >
+              ✨ AI에게 초안 부탁하기
+            </button>
           </div>
           <LetterPaper paperId={paper.id} font={font} to={to} body={body} from={from} mode="edit" onChange={setText} />
+          <p className={`mt-2 text-right text-sm tabular-nums ${over ? 'font-semibold text-stamp' : 'text-ink-soft'}`} aria-live="polite">
+            {count} / {paper.maxChars}자
+          </p>
           {over && (
             <p className="mt-2 text-sm text-stamp">
               편지지 한 장에 들어가는 {paper.maxChars}자를 넘었어요. {count - paper.maxChars}자를 줄여주세요.
@@ -64,6 +73,14 @@ export default function LetterEditor() {
           </div>
         </aside>
       </div>
+
+      <AiDraftModal
+        open={aiOpen}
+        onClose={() => setAiOpen(false)}
+        maxChars={paper.maxChars}
+        hasBody={body.trim().length > 0}
+        onInsert={(text) => setText({ body: text })}
+      />
 
       <div className="fixed inset-x-0 bottom-0 z-20 border-t border-line bg-paper/95 backdrop-blur lg:hidden">
         <div className="mx-auto flex max-w-6xl items-center gap-3 px-4 py-3">
