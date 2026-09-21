@@ -13,14 +13,14 @@ export default function StepIndicator({ current }: { current: 1 | 2 | 3 | 4 }) {
               <span
                 aria-current={active ? 'step' : undefined}
                 className={`flex h-6 w-6 items-center justify-center rounded-full text-[11px] font-semibold ${
-                  active ? 'bg-brick text-white' : done ? 'bg-ink text-cream' : 'bg-cream-deep text-ink-soft'
+                  active ? 'bg-stamp text-white' : done ? 'bg-ink text-paper' : 'bg-paper-deep text-ink-soft'
                 }`}
               >
                 {step}
               </span>
               <span className={active ? 'font-semibold text-ink' : 'text-ink-soft'}>{label}</span>
             </div>
-            {step < STEPS.length && <span className="h-px w-4 bg-paper-line sm:w-8" aria-hidden />}
+            {step < STEPS.length && <span className="h-px w-4 bg-line sm:w-8" aria-hidden />}
           </div>
         );
       })}

@@ -1,23 +1,75 @@
 @import "tailwindcss";
 
 @theme {
-  --color-cream: #faf6ef;
-  --color-cream-deep: #f1eadb;
-  --color-ink: #2b2622;
-  --color-ink-soft: #6b625a;
-  --color-brick: #c4553d;
-  --color-brick-soft: #f3ddd6;
-  --color-paper-line: #d9d2c5;
+  --color-paper: #f6f3ec;
+  --color-paper-deep: #ebe6da;
+  --color-ink: #1e2a3a;
+  --color-ink-soft: #5b6573;
+  --color-stamp: #c8362b;
+  --color-stamp-soft: #f6dcd8;
+  --color-postal: #2f5ea8;
+  --color-kraft: #d9c6a5;
+  --color-line: #d5cfc2;
+  --color-paper-line: #cfd6df;
   --font-sans: ui-sans-serif, system-ui, -apple-system, "Apple SD Gothic Neo", "Pretendard", "Noto Sans KR", sans-serif;
+  --font-hand: var(--font-nanum-pen);
 }
 
 html {
-  background: var(--color-cream);
+  background: var(--color-paper);
 }
 
 body {
-  background: var(--color-cream);
+  background: var(--color-paper);
   color: var(--color-ink);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
+}
+
+/* 항공우편 봉투 가장자리의 빨강·파랑 사선 줄무늬 */
+.airmail-stripe {
+  height: 6px;
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--color-stamp) 0 14px,
+    var(--color-paper) 14px 20px,
+    var(--color-postal) 20px 34px,
+    var(--color-paper) 34px 40px
+  );
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-postal);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
+
+@utility btn {
+  @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-[15px] font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-40;
+}
+
+@utility btn-primary {
+  @apply btn bg-stamp text-white hover:bg-[#b02f25];
+}
+
+@utility btn-secondary {
+  @apply btn border border-line bg-white/60 text-ink hover:bg-white;
+}
+
+@utility btn-ghost {
+  @apply btn px-3 text-ink-soft hover:text-ink;
+}
+
+@utility field {
+  @apply w-full rounded-lg border border-line bg-white px-3.5 py-2.5 text-[15px] text-ink placeholder:text-ink-soft/50 focus:border-postal;
+}
+
+@utility field-error {
+  @apply border-stamp;
 }

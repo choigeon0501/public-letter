@@ -36,14 +36,14 @@ export default function LetterPaper({ paperId, font, to, body, from, mode, onCha
     height: `${textArea.height}%`,
   };
   const bodyStyle: CSSProperties = {
-    fontSize: '3.6cqw',
+    fontSize: '3.9cqw',
     lineHeight: lh,
     backgroundImage: paper.lined
       ? `repeating-linear-gradient(to bottom, transparent 0, transparent calc(${lh} - 1px), var(--color-paper-line) calc(${lh} - 1px), var(--color-paper-line) ${lh})`
       : undefined,
   };
-  const toStyle: CSSProperties = { fontSize: '4.2cqw', lineHeight: lh };
-  const fromStyle: CSSProperties = { fontSize: '3.6cqw', lineHeight: lh };
+  const toStyle: CSSProperties = { fontSize: '4.6cqw', lineHeight: lh };
+  const fromStyle: CSSProperties = { fontSize: '3.9cqw', lineHeight: lh };
   const control = 'w-full bg-transparent outline-none placeholder:text-ink-soft/50';
 
   return (
