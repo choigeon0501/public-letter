@@ -47,7 +47,7 @@ components/
   paper/papers.ts          편지지 8종 메타데이터 (textArea %, maxChars, lineHeight)
   paper/backgrounds/       편지지 배경 (인라인 SVG/CSS, 이미지 파일 없음)
   write/                   에디터, 글꼴 선택, AI 초안 모달
-  address/                 주소 폼, Kakao 우편번호 임베드
+  address/                 주소 폼, Kakao 우편번호 팝업
   complete/                봉투 열림, 완료 화면
 lib/
   store.ts                 Zustand + sessionStorage (LetterState = 이후 주문 API 요청 본문)
