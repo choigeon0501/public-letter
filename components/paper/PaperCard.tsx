@@ -16,10 +16,10 @@ export default function PaperCard({ paper, selected, onSelect }: Props) {
     >
       <LetterPaper paperId={paper.id} font="nanum-pen" mode="read" {...SAMPLE_LETTER} />
       <div className="px-1 pb-1 pt-3">
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
           <span className="font-medium">{paper.name}</span>
           {paper.tags.map((t) => (
-            <span key={t} className="rounded-full bg-paper-deep px-2 py-0.5 text-[11px] text-ink-soft">
+            <span key={t} className="whitespace-nowrap rounded-full bg-paper-deep px-2 py-0.5 text-[11px] text-ink-soft">
               {t}
             </span>
           ))}

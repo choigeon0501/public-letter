@@ -25,7 +25,7 @@ export default function PaperPicker() {
     <div className="mx-auto w-full max-w-6xl px-4 pb-28 sm:px-6 lg:pb-12">
       <div className="py-4">
         <h1 className="text-2xl font-semibold">어떤 편지지에 쓸까요?</h1>
-        <p className="mt-1 text-ink-soft">편지지를 누르면 오른쪽에서 실제로 어떻게 보이는지 확인할 수 있어요.</p>
+        <p className="mt-1 text-ink-soft">편지지를 누르면 글이 올라간 모습을 미리 볼 수 있어요.</p>
       </div>
       <div className="lg:grid lg:grid-cols-[1fr_360px] lg:gap-10">
         <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4">
